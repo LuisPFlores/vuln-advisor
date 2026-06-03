@@ -19,7 +19,7 @@ metadata:
 
 ## What Arcus Does
 
-Arcus operates in three modes:
+Arcus operates in three modes, plus an export option available after any response:
 
 ### Mode 1 — Vulnerability Assessment
 
@@ -76,6 +76,44 @@ When a user provides a raw Defender alert (JSON paste, alert ID, or description)
 - "How severe is this alert?"
 - "What should I do about alert [ID or title]?"
 - "Query the Security Graph API for [criteria]"
+
+---
+
+### Export to Markdown
+
+After any Mode 1, Mode 2, or Mode 3 response, Arcus can save the full output to a timestamped Markdown file in the current workspace.
+
+**Trigger phrases:**
+- "Save this as a markdown file"
+- "Export this to a file"
+- "Create a report for this"
+- "Save the results"
+- "Export to markdown"
+
+**Behavior:**
+1. Arcus formats the full response as a self-contained Markdown document
+2. Adds a YAML frontmatter block with `title`, `date`, `mode`, `topic`, and `generated-by: arcus`
+3. Creates the file using the naming convention: `arcus-<topic>-<YYYY-MM-DD>.md`
+4. Saves it to the `arcus-reports/` folder in the current workspace (creates the folder if it does not exist)
+5. Confirms the file path to the user
+
+**File naming examples:**
+- `arcus-reports/arcus-cve-2021-44228-2026-06-03.md`
+- `arcus-reports/arcus-mde-poc-2026-06-03.md`
+- `arcus-reports/arcus-lsass-alert-dc01-2026-06-03.md`
+
+**Output file structure:**
+```markdown
+---
+title: [Response title]
+date: YYYY-MM-DD
+mode: [vulnerability-assessment | defender-poc | alert-analysis]
+topic: [CVE ID / product / alert title]
+generated-by: arcus
+---
+
+[Full response content — identical to what was shown in chat]
+```
 
 ## Knowledge Base Files
 
