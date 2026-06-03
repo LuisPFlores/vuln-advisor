@@ -171,22 +171,26 @@ All knowledge base files are self-contained Markdown — no build step, no packa
 
 ```
 arcus/
-├── README.md                                    ← This file (root only)
-├── agent/
-│   ├── .agent.json                              ← OpenCode agent configuration
-│   ├── AGENT.md                                 ← Full system prompt and behavior rules
-│   └── SKILL.md                                 ← OpenCode skill definition (3 modes)
-├── vulnerability/
-│   ├── vulnerability-classifications.md         ← 8 vulnerability classification categories
-│   ├── cvss-cve-cwe-reference.md                ← CVSS v2/v3.1/v4.0, CVE, CWE deep dive
-│   └── vulnerability-management-lifecycle.md    ← 6-phase lifecycle guide with AI tools per phase
-├── tools/
-│   ├── vendor-tool-comparison.md                ← 6 traditional scanner tools compared
-│   ├── ai-powered-tools.md                      ← 13 AI-powered tools + Defender aggregation
-│   └── output-standardization.md               ← SARIF, CycloneDX, SCAP, DefectDojo
-└── defender/
-    ├── microsoft-defender-poc.md                ← 8 POC playbooks + scenario-to-product matrix
-    └── defender-alert-analysis.md              ← Graph API, MITRE ATT&CK, CSS model, KQL queries
+├── README.md                                        ← This file (root only)
+├── LICENSE                                          ← MIT License
+└── .github/
+    └── skills/
+        └── arcus/                                   ← npx skills entry point
+            ├── SKILL.md                             ← Skill definition (name, description, instructions)
+            ├── agent/
+            │   ├── .agent.json                      ← OpenCode agent configuration
+            │   └── AGENT.md                         ← Full system prompt and behavior rules
+            ├── vulnerability/
+            │   ├── vulnerability-classifications.md ← 8 vulnerability classification categories
+            │   ├── cvss-cve-cwe-reference.md        ← CVSS v2/v3.1/v4.0, CVE, CWE deep dive
+            │   └── vulnerability-management-lifecycle.md ← 6-phase lifecycle with AI tools per phase
+            ├── tools/
+            │   ├── vendor-tool-comparison.md        ← 6 traditional scanner tools compared
+            │   ├── ai-powered-tools.md              ← 13 AI-powered tools + Defender aggregation
+            │   └── output-standardization.md        ← SARIF, CycloneDX, SCAP, DefectDojo
+            └── defender/
+                ├── microsoft-defender-poc.md        ← 8 POC playbooks + scenario-to-product matrix
+                └── defender-alert-analysis.md       ← Graph API, MITRE ATT&CK, CSS model, KQL queries
 ```
 
 ---
