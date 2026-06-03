@@ -1,6 +1,6 @@
-# Arcus — Vulnerability Assessment & Threat Alert Analysis Agent
+# Arcus — Vulnerability Assessment, Threat Alert & SARIF Analysis Agent
 
-> An AI-powered expert agent for vulnerability assessment, classification, scoring, remediation guidance, Microsoft Defender POC planning, and Defender threat alert analysis. Built for security engineers, SOC analysts, developers, and IT administrators.
+> An AI-powered expert agent for vulnerability assessment, Microsoft Defender POC planning, Defender threat alert analysis, and SARIF file analysis. Built for security engineers, SOC analysts, developers, and IT administrators.
 
 ---
 
@@ -18,6 +18,8 @@
   - [6. AI-Powered Tools](#6-ai-powered-tools)
   - [7. Staying Current](#7-staying-current)
   - [8. Defender Alert Analysis](#8-defender-alert-analysis)
+  - [9. SARIF File Analysis](#9-sarif-file-analysis)
+  - [10. Export to Markdown](#10-export-to-markdown)
 - [How to Use the Agent](#how-to-use-the-agent)
 - [Official References](#official-references)
 
@@ -25,7 +27,7 @@
 
 ## Overview
 
-**Arcus** is a structured AI cybersecurity agent with three modes:
+**Arcus** is a structured AI cybersecurity agent with four modes:
 
 - **Mode 1 — Vulnerability Assessment:** Every response follows a consistent 10-step analysis pattern:
 
@@ -44,7 +46,10 @@ Question received
 ```
 
 - **Mode 2 — Microsoft Defender POC Advisor:** Describe a security scenario → get a product recommendation + step-by-step POC deployment plan.
-- **Mode 3 — Defender Alert Analysis:** Paste a Defender alert or alert ID → get MITRE ATT&CK mapping, Composite Severity Score, response actions, and a Sentinel KQL hunting query.
+- **Mode 3 — Defender Alert Analysis:** Paste a Defender alert JSON (from Defender for Cloud or Defender XDR) → get MITRE ATT&CK mapping, Composite Severity Score, response actions, and a Sentinel KQL hunting query.
+- **Mode 4 — SARIF File Analysis:** Paste or attach a `.sarif` file → get a full finding-by-finding breakdown with CWE/CVE/CVSS mapping, KEV/MSRC check, and a prioritized remediation plan.
+
+Every response ends with an offer to save the output as a Markdown file in `arcus-reports/`.
 
 ---
 
@@ -682,11 +687,106 @@ CSS overrides raw Defender severity by incorporating 5 weighted factors:
 
 ---
 
+### 9. SARIF File Analysis
+
+**Reference file:** `defender/defender-alert-analysis.md`
+
+Arcus parses any SARIF file and applies the same structured analysis as Mode 1 — but across all findings at once.
+
+#### How to Trigger
+
+Paste the file contents:
+```
+Analyze this SARIF file: [paste contents]
+```
+
+Or attach the file directly in VS Code Copilot Chat:
+```
+#file:results.sarif analyze this SARIF file
+```
+
+> For large files (1000+ findings), Copilot may hit context limits. Use `#file:results.sarif analyze only Critical and High findings` to scope the analysis.
+
+#### Output Structure
+
+```
+## SARIF Analysis Report
+
+Tool: [scanner name + version]
+Total findings: [N]
+Critical/High: [N] | Medium: [N] | Low/Info: [N]
+
+### Finding N — [ruleId]: [message]
+- File/Resource: [location]
+- Level: error / warning / note
+- CWE: [CWE-ID] — [name]
+- CVE: [CVE-ID] (CVSS [score])
+- KEV: YES / NO
+- MSRC: YES / NO
+- Remediation: [specific fix guidance]
+
+### Prioritized Remediation Plan
+| Priority | Finding | CWE | Severity | Recommended Fix |
+|---|---|---|---|---|
+```
+
+#### SARIF Fields Arcus Reads
+
+| SARIF field | Used for |
+|---|---|
+| `runs[].tool.driver.name` | Scanner identification |
+| `runs[].results[].ruleId` | CWE / CVE mapping |
+| `runs[].results[].message.text` | Finding description |
+| `runs[].results[].level` | Base severity (error / warning / note) |
+| `runs[].results[].locations[].physicalLocation.artifactLocation.uri` | Affected file or resource |
+| `runs[].results[].properties` | Additional metadata including CVSS if present |
+| `runs[].rules[].properties.tags` | CWE tags (e.g. `CWE-787`) |
+| `runs[].rules[].defaultConfiguration.level` | Rule default severity |
+
+---
+
+### 10. Export to Markdown
+
+After any response (all modes), Arcus will ask:
+
+> Would you like me to save this as a markdown file in `arcus-reports/`?
+
+Reply **yes** and Arcus creates a timestamped file in `arcus-reports/` with YAML frontmatter:
+
+```markdown
+---
+title: [Response title]
+date: YYYY-MM-DD
+mode: vulnerability-assessment | defender-poc | alert-analysis | sarif-analysis
+topic: [CVE ID / product / alert title / scanner name]
+generated-by: arcus
+---
+
+[Full response content]
+```
+
+**File naming convention:**
+
+| Mode | Example |
+|---|---|
+| Vulnerability Assessment | `arcus-reports/arcus-cve-2021-44228-2026-06-03.md` |
+| Defender POC | `arcus-reports/arcus-mde-poc-2026-06-03.md` |
+| Alert Analysis | `arcus-reports/arcus-lsass-alert-dc01-2026-06-03.md` |
+| SARIF Analysis | `arcus-reports/arcus-sarif-bandit-2026-06-03.md` |
+
+You can also trigger export at any time with:
+- `"Save this as a markdown file"`
+- `"Export to markdown"`
+- `"Create a report for this"`
+
+---
+
 ## How to Use the Agent
 
 ### Example Questions
 
 ```
+# Mode 1 — Vulnerability Assessment
 "How do I deal with Python weaknesses in my application?"
 "What is the risk of CVE-2021-44228 (Log4Shell) in my environment?"
 "How does Tenable detect CWE-89 (SQL Injection)?"
@@ -695,6 +795,25 @@ CSS overrides raw Defender severity by incorporating 5 weighted factors:
 "What phase of the vulnerability management lifecycle is patching?"
 "How do I prioritize 500 vulnerabilities found in a scan?"
 "What new CVEs were published this week that affect Linux?"
+
+# Mode 2 — Defender POC
+"We had a ransomware incident — how do I POC Defender for Endpoint?"
+"Our SOC gets 500 alerts a day and can't keep up — what should we deploy?"
+"How do I evaluate Microsoft Defender for Identity?"
+
+# Mode 3 — Defender Alert Analysis
+"Analyze this Defender alert: [paste Defender for Cloud JSON]"
+"Explain this alert: [paste alert JSON from security.microsoft.com]"
+"What does this alert mean? [paste alert title or description]"
+
+# Mode 4 — SARIF File Analysis
+"Analyze this SARIF file: [paste contents]"
+"#file:results.sarif analyze this SARIF file"
+"#file:results.sarif analyze only Critical and High findings"
+
+# Export
+"Save this as a markdown file"
+"Export to markdown"
 ```
 
 ### Response Format (Every Answer)
