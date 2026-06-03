@@ -52,8 +52,9 @@ Question received
 
 ### Prerequisites
 
-- [OpenCode](https://opencode.ai) — AI coding agent that loads `.agent.json` and `SKILL.md` automatically
 - [Git](https://git-scm.com) — to clone the repository
+- [GitHub Copilot](https://github.com/features/copilot) — with a Copilot Individual, Business, or Enterprise subscription
+- [Visual Studio Code](https://code.visualstudio.com) with the [GitHub Copilot extension](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot) installed, **or** access to [github.com/copilot](https://github.com/copilot)
 - No additional runtime dependencies; all knowledge base files are plain Markdown
 
 ### Clone the Repository
@@ -63,42 +64,96 @@ git clone https://github.com/LuisPFlores/arcus.git
 cd arcus
 ```
 
-### Load as an OpenCode Agent
+### Option 1 — Repository-Level Instructions (Copilot in VS Code)
 
-1. Open a terminal in the cloned `arcus/` directory.
-2. Start OpenCode:
+This approach automatically activates Arcus whenever you open this repository in VS Code with GitHub Copilot.
+
+1. Copy the system prompt into the GitHub Copilot instructions file for the repo:
 
    ```bash
-   opencode
+   # From the repo root
+   mkdir -p .github
+   cp agent/AGENT.md .github/copilot-instructions.md
    ```
 
-3. OpenCode will automatically detect `agent/.agent.json` and load the Arcus agent with all three modes enabled.
+2. Open the repository in VS Code:
 
-> **Tip:** You can also add Arcus as a skill by pointing OpenCode to `agent/SKILL.md`.
+   ```bash
+   code .
+   ```
 
-### Load as an OpenCode Skill
+3. Open **Copilot Chat** (`Ctrl+Alt+I` / `⌃⌘I`) and start a conversation. Copilot will automatically apply the Arcus instructions to every response in this workspace.
 
-To use Arcus as a reusable skill across multiple projects:
+> **How it works:** VS Code reads `.github/copilot-instructions.md` and prepends its content to every Copilot Chat request made within the workspace. No manual prompting required.
 
-```bash
-# Copy the skill definition to your OpenCode skills directory
-cp agent/SKILL.md ~/.config/opencode/skills/arcus.md
-```
+**Reference:** [GitHub Docs — Adding repository custom instructions](https://docs.github.com/en/copilot/customizing-copilot/adding-repository-custom-instructions-for-github-copilot)
 
-Then reference it in any OpenCode session by loading the `arcus` skill.
+---
 
-### Manual / Standalone Use
+### Option 2 — Personal Instructions (Copilot in VS Code, all workspaces)
 
-The knowledge base files are self-contained Markdown. You can reference them directly:
+This approach loads Arcus as your personal Copilot assistant across every project.
+
+1. Open VS Code **Settings** (`Ctrl+,` / `⌘,`)
+2. Search for `github.copilot.chat.codeGeneration.instructions`
+3. Click **Edit in settings.json** and add:
+
+   ```json
+   "github.copilot.chat.codeGeneration.instructions": [
+     {
+       "file": "/absolute/path/to/arcus/agent/AGENT.md"
+     }
+   ]
+   ```
+
+   Replace `/absolute/path/to/arcus` with the actual path where you cloned the repo.
+
+4. Save and reload VS Code. Arcus instructions are now active in all Copilot Chat sessions.
+
+**Reference:** [GitHub Docs — Specifying instructions for Copilot to follow](https://docs.github.com/en/copilot/customizing-copilot/adding-personal-custom-instructions-for-github-copilot)
+
+---
+
+### Option 3 — GitHub Copilot on GitHub.com
+
+Use Arcus directly in your browser through [github.com/copilot](https://github.com/copilot):
+
+1. Open [github.com/copilot](https://github.com/copilot) and start a new chat.
+2. In the chat input, attach the system prompt using the **Attach file** button or paste the contents of `agent/AGENT.md` as context.
+3. Alternatively, reference this repository directly by typing:
+
+   ```
+   Use the instructions in https://github.com/LuisPFlores/arcus/blob/master/agent/AGENT.md
+   ```
+
+4. Ask your vulnerability assessment or Defender alert question.
+
+> **Tip:** Pin this conversation or save the prompt for repeated use.
+
+---
+
+### Option 4 — GitHub Copilot Extensions (Enterprise / Advanced)
+
+For organizations using [GitHub Copilot Extensions](https://docs.github.com/en/copilot/building-copilot-extensions/about-building-copilot-extensions):
+
+1. Publish Arcus as a GitHub App with a Copilot agent by using `agent/AGENT.md` as the system prompt.
+2. Install the extension from your GitHub organization's Copilot settings.
+3. Invoke Arcus in Copilot Chat using `@arcus [your question]`.
+
+**Reference:** [GitHub Docs — Building Copilot Extensions](https://docs.github.com/en/copilot/building-copilot-extensions/about-building-copilot-extensions)
+
+---
+
+### Knowledge Base Reference
+
+All knowledge base files are self-contained Markdown — no build step, no package manager, no environment variables required:
 
 | Folder | Purpose |
 |---|---|
-| `agent/` | Agent configuration, system prompt, skill definition |
+| `agent/` | System prompt (`AGENT.md`), agent config, skill definition |
 | `vulnerability/` | CVE/CWE/CVSS reference, classification taxonomy, lifecycle guide |
 | `tools/` | Scanner comparisons, AI tool catalog, output format standards |
 | `defender/` | Defender POC playbooks, alert analysis guide |
-
-No build step, no package manager, no environment variables required.
 
 ---
 
