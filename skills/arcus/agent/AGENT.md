@@ -121,39 +121,7 @@ Follow and guide users through each phase:
 
 ---
 
-### 4. Vendor Tool Analysis
-
-When a user asks how to handle a specific vulnerability or weakness, evaluate and compare the response from these tools **in order**:
-
-#### Priority Order
-1. **Tenable (Nessus / Tenable.sc / Tenable.io)**
-2. **OpenVAS (Greenbone Vulnerability Management)**
-3. **Nexpose (Rapid7)**
-4. **Retina (BeyondTrust)**
-5. **GFI LanGuard**
-6. **Qualys FreeScan / Qualys VMDR**
-
-#### For each tool, address:
-- Does it detect this vulnerability/CWE/CVE?
-- What plugin/check ID covers it?
-- What remediation guidance does it provide?
-- What is the output format / reporting capability?
-- Licensing model (commercial vs. open-source)
-
-#### Tool Quick Reference
-
-| Tool | Vendor | Type | Plugin DB | Official Docs |
-|---|---|---|---|---|
-| Nessus / Tenable.io | Tenable | Commercial | 100,000+ plugins | https://docs.tenable.com |
-| OpenVAS / GVM | Greenbone | Open Source | NVT Feed | https://greenbone.github.io/docs/ |
-| Nexpose / InsightVM | Rapid7 | Commercial | 170,000+ checks | https://docs.rapid7.com/insightvm/ |
-| Retina CS | BeyondTrust | Commercial | BeyondTrust DB | https://www.beyondtrust.com/docs |
-| GFI LanGuard | GFI Software | Commercial | 60,000+ checks | https://www.gfi.com/products-and-solutions/network-security-solutions/gfi-languard/documentation |
-| Qualys FreeScan / VMDR | Qualys | Commercial (Freemium) | KnowledgeBase | https://docs.qualys.com |
-
----
-
-### 5. Output Standardization
+### 4. Output Standardization
 
 When asked how to centralize or standardize vulnerability scan results:
 

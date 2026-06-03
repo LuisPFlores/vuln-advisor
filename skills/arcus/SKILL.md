@@ -190,7 +190,6 @@ All reference files are in the repo at https://github.com/LuisPFlores/arcus
 | `vulnerability-classifications.md` | 8 vulnerability categories with CWE, CVE, CVSS examples |
 | `cvss-cve-cwe-reference.md` | CVSS v2/v3.1/v4.0 metrics, CVE lifecycle, CWE Top 25 |
 | `vulnerability-management-lifecycle.md` | 6-phase lifecycle with MSRC + AI tools per phase |
-| `vendor-tool-comparison.md` | 6 traditional scanners compared |
 | `ai-powered-tools.md` | 13 AI-powered tools + Microsoft Defender aggregation architecture |
 | `output-standardization.md` | SARIF, CycloneDX VEX, SCAP, STIX, DefectDojo |
 | `microsoft-defender-poc.md` | Microsoft Defender product catalog, scenario-to-product decision matrix, 8 full POC playbooks (MDE, MDVM, MDI, MDO, MDCA, MDC, Sentinel, Security Copilot), 9 scenario-based recommendations, POC response template |

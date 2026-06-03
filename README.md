@@ -13,13 +13,12 @@
   - [1. Vulnerability Classification](#1-vulnerability-classification)
   - [2. CVSS / CVE / CWE Analysis](#2-cvss--cve--cwe-analysis)
   - [3. Vulnerability Management Life Cycle](#3-vulnerability-management-life-cycle)
-  - [4. Vendor Tool Analysis](#4-vendor-tool-analysis)
-  - [5. Output Standardization](#5-output-standardization)
-  - [6. AI-Powered Tools](#6-ai-powered-tools)
-  - [7. Staying Current](#7-staying-current)
-  - [8. Defender Alert Analysis](#8-defender-alert-analysis)
-  - [9. SARIF File Analysis](#9-sarif-file-analysis)
-  - [10. Export to Markdown](#10-export-to-markdown)
+  - [4. Output Standardization](#4-output-standardization)
+  - [5. AI-Powered Tools](#5-ai-powered-tools)
+  - [6. Staying Current](#6-staying-current)
+  - [7. Defender Alert Analysis](#7-defender-alert-analysis)
+  - [8. SARIF File Analysis](#8-sarif-file-analysis)
+  - [9. Export to Markdown](#9-export-to-markdown)
 - [How to Use the Agent](#how-to-use-the-agent)
 - [Official References](#official-references)
 
@@ -189,7 +188,6 @@ arcus/
         │   ├── cvss-cve-cwe-reference.md            ← CVSS v2/v3.1/v4.0, CVE, CWE deep dive
         │   └── vulnerability-management-lifecycle.md ← 6-phase lifecycle with AI tools per phase
         ├── tools/
-        │   ├── vendor-tool-comparison.md            ← 6 traditional scanner tools compared
         │   ├── ai-powered-tools.md                  ← 13 AI-powered tools + Defender aggregation
         │   └── output-standardization.md            ← SARIF, CycloneDX, SCAP, DefectDojo
         └── defender/
@@ -432,62 +430,7 @@ The agent maps every question to a phase in the 6-phase life cycle and provides 
 
 ---
 
-### 4. Vendor Tool Analysis
-
-**Reference file:** `vendor-tool-comparison.md`
-
-When a vulnerability question is asked, the agent evaluates coverage across all 6 tools **in this fixed order**, providing plugin IDs, detection logic, and remediation guidance for each:
-
-#### Tool Priority Order
-
-```
-1. Tenable (Nessus / Tenable.io / Tenable.sc)
-2. OpenVAS (Greenbone Vulnerability Management)
-3. Nexpose / InsightVM (Rapid7)
-4. Retina CS (BeyondTrust)
-5. GFI LanGuard
-6. Qualys FreeScan / VMDR
-```
-
-#### Comparative Summary
-
-| Feature | Tenable | OpenVAS | Nexpose | Retina | GFI LanGuard | Qualys |
-|---|---|---|---|---|---|---|
-| **Plugin/Check Count** | 100,000+ | 70,000+ | 170,000+ | ~60,000 | 60,000+ | 150,000+ |
-| **Free Tier** | Essentials (16 IPs) | Community (unlimited) | Community (32 IPs) | Community (32 IPs) | Trial only | FreeScan (10 IPs) |
-| **Agent-Based Scanning** | Yes | No (community) | Yes | Yes | Yes | Yes |
-| **Cloud Assessment** | Yes | Limited | Yes | Limited | No | Yes |
-| **Container Scanning** | Yes | No | Yes | No | No | Yes |
-| **Built-in Patch Management** | No | No | No | No | **Yes** | No |
-| **CVSS v4.0 Support** | In progress | v2/v3 | In progress | v2/v3 | v2/v3 | **Yes** |
-| **EPSS / Risk Prioritization** | VPR | No | Real Risk Score | No | No | TruRisk |
-| **OT / ICS Support** | Tenable.ot | No | No | No | No | No |
-| **Compliance Audits** | Extensive | BSI, PCI | PCI, HIPAA | PCI, HIPAA | PCI, CIS | Extensive |
-| **SARIF Export** | Via API | Community tools | Via API | Limited | Limited | WAS module |
-
-#### Per-Tool Analysis for Each Query Includes
-
-- Does the tool detect this CVE/CWE?
-- What plugin/QID/check ID covers it?
-- How quickly was coverage added after CVE publication?
-- What remediation guidance does the tool provide?
-- What output/report format does it produce?
-- Licensing model (free vs. commercial)
-
-#### Official Documentation Links
-
-| Tool | Docs | Plugin/Check Search |
-|---|---|---|
-| Tenable | https://docs.tenable.com | https://www.tenable.com/plugins |
-| OpenVAS | https://greenbone.github.io/docs/ | https://community.greenbone.net |
-| Nexpose / InsightVM | https://docs.rapid7.com/insightvm/ | https://www.rapid7.com/db/ |
-| Retina CS | https://www.beyondtrust.com/docs/retina/ | BeyondTrust console |
-| GFI LanGuard | https://www.gfi.com/products-and-solutions/network-security-solutions/gfi-languard | GFI console |
-| Qualys | https://docs.qualys.com | https://www.qualys.com/research/security-advisories/ |
-
----
-
-### 5. Output Standardization
+### 4. Output Standardization
 
 **Reference file:** `output-standardization.md`
 
@@ -553,7 +496,7 @@ cd django-DefectDojo
 
 ---
 
-### 6. AI-Powered Vulnerability Assessment Tools
+### 5. AI-Powered Vulnerability Assessment Tools
 
 **Reference file:** `ai-powered-tools.md`
 
@@ -604,7 +547,7 @@ GitHub GHAS / Snyk / Azure DevOps
 
 ---
 
-### 7. Staying Current
+### 6. Staying Current
 
 The agent is designed to reference live update sources for newly published CVEs, CWEs, and CVSS changes, and to evaluate the impact on each supported scanner.
 
@@ -637,7 +580,7 @@ The agent is designed to reference live update sources for newly published CVEs,
 
 ---
 
-### 8. Defender Alert Analysis
+### 7. Defender Alert Analysis
 
 **Reference file:** `defender-alert-analysis.md`
 
@@ -687,7 +630,7 @@ CSS overrides raw Defender severity by incorporating 5 weighted factors:
 
 ---
 
-### 9. SARIF File Analysis
+### 8. SARIF File Analysis
 
 **Reference file:** `defender/defender-alert-analysis.md`
 
@@ -745,7 +688,7 @@ Critical/High: [N] | Medium: [N] | Low/Info: [N]
 
 ---
 
-### 10. Export to Markdown
+### 9. Export to Markdown
 
 After any response (all modes), Arcus will ask:
 
