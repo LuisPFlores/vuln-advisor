@@ -7,6 +7,7 @@
 ## Table of Contents
 
 - [Overview](#overview)
+- [Installation](#installation)
 - [Repository Structure](#repository-structure)
 - [Functions](#functions)
   - [1. Vulnerability Classification](#1-vulnerability-classification)
@@ -47,22 +48,80 @@ Question received
 
 ---
 
+## Installation
+
+### Prerequisites
+
+- [OpenCode](https://opencode.ai) — AI coding agent that loads `.agent.json` and `SKILL.md` automatically
+- [Git](https://git-scm.com) — to clone the repository
+- No additional runtime dependencies; all knowledge base files are plain Markdown
+
+### Clone the Repository
+
+```bash
+git clone https://github.com/LuisPFlores/arcus.git
+cd arcus
+```
+
+### Load as an OpenCode Agent
+
+1. Open a terminal in the cloned `arcus/` directory.
+2. Start OpenCode:
+
+   ```bash
+   opencode
+   ```
+
+3. OpenCode will automatically detect `agent/.agent.json` and load the Arcus agent with all three modes enabled.
+
+> **Tip:** You can also add Arcus as a skill by pointing OpenCode to `agent/SKILL.md`.
+
+### Load as an OpenCode Skill
+
+To use Arcus as a reusable skill across multiple projects:
+
+```bash
+# Copy the skill definition to your OpenCode skills directory
+cp agent/SKILL.md ~/.config/opencode/skills/arcus.md
+```
+
+Then reference it in any OpenCode session by loading the `arcus` skill.
+
+### Manual / Standalone Use
+
+The knowledge base files are self-contained Markdown. You can reference them directly:
+
+| Folder | Purpose |
+|---|---|
+| `agent/` | Agent configuration, system prompt, skill definition |
+| `vulnerability/` | CVE/CWE/CVSS reference, classification taxonomy, lifecycle guide |
+| `tools/` | Scanner comparisons, AI tool catalog, output format standards |
+| `defender/` | Defender POC playbooks, alert analysis guide |
+
+No build step, no package manager, no environment variables required.
+
+---
+
 ## Repository Structure
 
 ```
-Vulnerability Assessment/
-├── .agent.json                          ← OpenCode agent configuration
-├── README.md                            ← This file
-├── AGENT.md                             ← Full agent system prompt and behavior rules
-├── SKILL.md                             ← OpenCode skill definition (3 modes)
-├── vulnerability-classifications.md     ← 8 vulnerability classification categories
-├── cvss-cve-cwe-reference.md            ← CVSS v2/v3.1/v4.0, CVE, CWE deep dive
-├── vulnerability-management-lifecycle.md ← 6-phase lifecycle guide with AI tools per phase
-├── vendor-tool-comparison.md            ← 6 traditional scanner tools compared
-├── ai-powered-tools.md                  ← 13 AI-powered tools + Microsoft Defender aggregation
-├── microsoft-defender-poc.md            ← 8 POC playbooks + scenario-to-product matrix
-├── defender-alert-analysis.md           ← Graph API, MITRE ATT&CK mapping, CSS model, KQL queries
-└── output-standardization.md           ← SARIF, CycloneDX, SCAP, DefectDojo
+arcus/
+├── README.md                                    ← This file (root only)
+├── agent/
+│   ├── .agent.json                              ← OpenCode agent configuration
+│   ├── AGENT.md                                 ← Full system prompt and behavior rules
+│   └── SKILL.md                                 ← OpenCode skill definition (3 modes)
+├── vulnerability/
+│   ├── vulnerability-classifications.md         ← 8 vulnerability classification categories
+│   ├── cvss-cve-cwe-reference.md                ← CVSS v2/v3.1/v4.0, CVE, CWE deep dive
+│   └── vulnerability-management-lifecycle.md    ← 6-phase lifecycle guide with AI tools per phase
+├── tools/
+│   ├── vendor-tool-comparison.md                ← 6 traditional scanner tools compared
+│   ├── ai-powered-tools.md                      ← 13 AI-powered tools + Defender aggregation
+│   └── output-standardization.md               ← SARIF, CycloneDX, SCAP, DefectDojo
+└── defender/
+    ├── microsoft-defender-poc.md                ← 8 POC playbooks + scenario-to-product matrix
+    └── defender-alert-analysis.md              ← Graph API, MITRE ATT&CK, CSS model, KQL queries
 ```
 
 ---
