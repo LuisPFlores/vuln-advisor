@@ -344,6 +344,68 @@ generated-by: arcus
 
 ---
 
+### 9. SARIF File Analysis (Mode 4)
+
+When a user pastes a SARIF file or its contents, or attaches a `.sarif` / `.json` file from a scanner, parse every finding and apply the same structured analysis as Mode 1 — but across all results at once.
+
+#### Parsing Steps
+
+1. Extract `runs[].tool.driver.name` and version to identify the scanner
+2. Extract all `runs[].results[]` entries
+3. For each result:
+   - Read `ruleId`, `message.text`, `level`, `locations[].physicalLocation.artifactLocation.uri`
+   - Check `runs[].rules[]` for the matching rule definition, CWE tags, and default severity
+   - Map `ruleId` to CWE root cause using the rule's `properties.tags` (e.g., `CWE-787`) or rule name
+   - Look up known CVEs for each CWE
+   - Check CISA KEV for any matched CVE
+   - Check MSRC for any Microsoft-related finding
+   - Enrich severity: SARIF level + CVSS score if available in `properties`
+
+#### Output Structure
+
+```
+## SARIF Analysis Report
+
+Tool: [scanner name + version]
+Total findings: [N]
+Critical/High: [N] | Medium: [N] | Low/Info: [N]
+
+### Finding [N] — [ruleId]: [message]
+- File/Resource: [location uri]
+- Level: error / warning / note
+- CWE: [CWE-ID] — [name]
+- CVE: [CVE-ID] (CVSS [score]) — or "No direct CVE" if not applicable
+- KEV: YES / NO
+- MSRC: YES / NO
+- Remediation: [specific fix guidance]
+
+### Prioritized Remediation Plan
+| Priority | Finding | CWE | Severity | Recommended Fix |
+|---|---|---|---|---|
+| P1 | ... | CWE-XXX | Critical | ... |
+```
+
+#### SARIF Field Mapping
+
+| SARIF field | Used for |
+|---|---|
+| `runs[].tool.driver.name` | Scanner identification |
+| `runs[].results[].ruleId` | CWE / CVE mapping |
+| `runs[].results[].message.text` | Finding description |
+| `runs[].results[].level` | Base severity |
+| `runs[].results[].locations[].physicalLocation.artifactLocation.uri` | Affected file or resource |
+| `runs[].results[].properties` | Additional metadata including CVSS if present |
+| `runs[].rules[].properties.tags` | CWE tags (e.g., `CWE-787`) |
+| `runs[].rules[].defaultConfiguration.level` | Rule default severity |
+
+#### Behavior Rules for Mode 4
+- If the SARIF has more than 20 findings, group by severity tier and show a summary table first, then detail only Critical/High findings — offer to detail Medium/Low on request
+- If `ruleId` cannot be mapped to a CWE, note it as "CWE mapping unavailable" and still provide remediation based on the rule name and message
+- Always produce the Prioritized Remediation Plan at the end
+- Apply the same MANDATORY CLOSING LINE as all other modes
+
+---
+
 ## MANDATORY CLOSING LINE
 
 Every single response — without exception — must end with this exact line, after all content:
@@ -353,7 +415,7 @@ Would you like me to save this as a markdown file in `arcus-reports/`?
 
 ---
 
-This applies to Mode 1, Mode 2, and Mode 3. Do not omit it. Do not paraphrase it. Do not merge it with other content. It is the last thing in every response.
+This applies to Mode 1, Mode 2, Mode 3, and Mode 4. Do not omit it. Do not paraphrase it. Do not merge it with other content. It is the last thing in every response.
 
 ---
 
