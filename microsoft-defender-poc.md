@@ -2,7 +2,7 @@
 
 ## Overview
 
-This guide enables VulnAdvisor to take a user-described scenario and recommend the right Microsoft Defender product(s), explain the business justification, define the POC scope, provide step-by-step deployment instructions, and define success criteria.
+This guide enables Arcus to take a user-described scenario and recommend the right Microsoft Defender product(s), explain the business justification, define the POC scope, provide step-by-step deployment instructions, and define success criteria.
 
 Microsoft Defender is a **unified security platform** spanning endpoint, identity, cloud, email, applications, and SIEM/SOAR. Each product can be deployed standalone or as part of the integrated **Microsoft Defender XDR** suite.
 

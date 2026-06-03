@@ -1,4 +1,4 @@
-# VulnAdvisor — Vulnerability Assessment Agent
+# Arcus — Vulnerability Assessment Agent
 
 > An AI-powered expert agent for vulnerability assessment, classification, scoring, remediation guidance, and output standardization. Built for security engineers, developers, and IT administrators.
 
@@ -23,7 +23,7 @@
 
 ## Overview
 
-**VulnAdvisor** is a structured vulnerability assessment agent that responds to any security question with a complete, standardized analysis. Every response follows a consistent pattern:
+**Arcus** is a structured vulnerability assessment agent that responds to any security question with a complete, standardized analysis. Every response follows a consistent pattern:
 
 ```
 Question received
@@ -511,7 +511,7 @@ The agent is designed to reference live update sources for newly published CVEs,
 
 ### Response Format (Every Answer)
 
-Every VulnAdvisor response follows this structure:
+Every Arcus response follows this structure:
 
 ```
 1. CLASSIFICATION    — Which of the 8 vulnerability categories applies
