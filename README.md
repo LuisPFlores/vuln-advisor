@@ -1,6 +1,6 @@
-# Arcus — Vulnerability Assessment Agent
+# Arcus — Vulnerability Assessment & Threat Alert Analysis Agent
 
-> An AI-powered expert agent for vulnerability assessment, classification, scoring, remediation guidance, and output standardization. Built for security engineers, developers, and IT administrators.
+> An AI-powered expert agent for vulnerability assessment, classification, scoring, remediation guidance, Microsoft Defender POC planning, and Defender threat alert analysis. Built for security engineers, SOC analysts, developers, and IT administrators.
 
 ---
 
@@ -16,6 +16,7 @@
   - [5. Output Standardization](#5-output-standardization)
   - [6. AI-Powered Tools](#6-ai-powered-tools)
   - [7. Staying Current](#7-staying-current)
+  - [8. Defender Alert Analysis](#8-defender-alert-analysis)
 - [How to Use the Agent](#how-to-use-the-agent)
 - [Official References](#official-references)
 
@@ -23,7 +24,9 @@
 
 ## Overview
 
-**Arcus** is a structured vulnerability assessment agent that responds to any security question with a complete, standardized analysis. Every response follows a consistent pattern:
+**Arcus** is a structured AI cybersecurity agent with three modes:
+
+- **Mode 1 — Vulnerability Assessment:** Every response follows a consistent 10-step analysis pattern:
 
 ```
 Question received
@@ -31,11 +34,16 @@ Question received
         └── Map CWE root cause
               └── Identify CVE(s) + CVSS score
                     └── Check CISA KEV status
-                          └── Evaluate tool coverage (6 scanners in order)
-                                └── Map to lifecycle phase
-                                      └── Recommend output format
-                                            └── Cite official references
+                          └── Check MSRC advisory
+                                └── Evaluate tool coverage (6 scanners in order)
+                                      └── Identify applicable AI tools
+                                            └── Map to lifecycle phase
+                                                  └── Recommend output format
+                                                        └── Cite official references
 ```
+
+- **Mode 2 — Microsoft Defender POC Advisor:** Describe a security scenario → get a product recommendation + step-by-step POC deployment plan.
+- **Mode 3 — Defender Alert Analysis:** Paste a Defender alert or alert ID → get MITRE ATT&CK mapping, Composite Severity Score, response actions, and a Sentinel KQL hunting query.
 
 ---
 
@@ -46,11 +54,14 @@ Vulnerability Assessment/
 ├── .agent.json                          ← OpenCode agent configuration
 ├── README.md                            ← This file
 ├── AGENT.md                             ← Full agent system prompt and behavior rules
+├── SKILL.md                             ← OpenCode skill definition (3 modes)
 ├── vulnerability-classifications.md     ← 8 vulnerability classification categories
 ├── cvss-cve-cwe-reference.md            ← CVSS v2/v3.1/v4.0, CVE, CWE deep dive
 ├── vulnerability-management-lifecycle.md ← 6-phase lifecycle guide with AI tools per phase
 ├── vendor-tool-comparison.md            ← 6 traditional scanner tools compared
 ├── ai-powered-tools.md                  ← 13 AI-powered tools + Microsoft Defender aggregation
+├── microsoft-defender-poc.md            ← 8 POC playbooks + scenario-to-product matrix
+├── defender-alert-analysis.md           ← Graph API, MITRE ATT&CK mapping, CSS model, KQL queries
 └── output-standardization.md           ← SARIF, CycloneDX, SCAP, DefectDojo
 ```
 
@@ -494,6 +505,56 @@ The agent is designed to reference live update sources for newly published CVEs,
 
 ---
 
+### 8. Defender Alert Analysis
+
+**Reference file:** `defender-alert-analysis.md`
+
+Arcus analyzes Microsoft Defender alerts end-to-end. Given a raw alert (JSON paste, alert ID, or plain-language description), it produces a 10-section response:
+
+| Section | Content |
+|---|---|
+| **1. Alert Summary** | Title, ID, severity, status, affected asset, detection timestamp |
+| **2. Plain-Language Explanation** | What happened, what was targeted, what the attacker was attempting |
+| **3. MITRE ATT&CK Mapping** | Tactic → Technique → Sub-technique; kill chain position |
+| **4. Composite Severity Score (CSS)** | Weighted formula → P0–P4 priority tier |
+| **5. Asset Context** | Criticality, exposure level, blast radius |
+| **6. Threat Actor Context** | Known ATT&CK Groups using this technique |
+| **7. Recommended Response Actions** | Graph API actions: isolate, disable, block, collect |
+| **8. KQL Hunting Query** | Sentinel query to hunt for related activity |
+| **9. VMLC Phase Mapping** | Lifecycle phase (typically DISCOVER or PRIORITIZE) |
+| **10. References** | Graph API docs, MITRE ATT&CK entry, Microsoft Learn |
+
+#### Composite Severity Score (CSS)
+
+CSS overrides raw Defender severity by incorporating 5 weighted factors:
+
+| Factor | Weight | Input Range |
+|---|---|---|
+| Defender Severity | 30% | Informational=10, Low=40, Medium=60, High=80, Critical=100 |
+| MITRE Tactic Weight | 25% | Impact=100 → Reconnaissance=30 |
+| Asset Criticality | 20% | DC/CA=100, Server=75, Workstation=50, Non-managed=25 |
+| Active Exploitation Signal | 15% | KEV/MSRC exploited=100, PoC=75, Theoretical=25, None=0 |
+| Blast Radius | 10% | Domain-wide=100, Subnet=75, Host=50, Isolated=25 |
+
+**Priority Tiers:**
+
+| CSS Range | Priority | SLA |
+|---|---|---|
+| 80–100 | P0 — Critical | < 1 hour |
+| 60–79 | P1 — High | < 4 hours |
+| 40–59 | P2 — Medium | < 24 hours |
+| 20–39 | P3 — Low | < 72 hours |
+| 0–19 | P4 — Informational | Next business day |
+
+> Domain Controllers, executive accounts, and internet-facing assets escalate one tier regardless of CSS.
+
+**Official References:**
+- Microsoft Security Graph API: https://learn.microsoft.com/en-us/graph/api/resources/security-api-overview
+- MITRE ATT&CK: https://attack.mitre.org
+- Microsoft Sentinel KQL: https://learn.microsoft.com/en-us/azure/sentinel/kusto-overview
+
+---
+
 ## How to Use the Agent
 
 ### Example Questions
@@ -591,3 +652,8 @@ Every Arcus response follows this structure:
 | **Darktrace PREVENT** | https://darktrace.com/products/prevent/ |
 | **MSRC Security Update Guide** | https://msrc.microsoft.com/update-guide/ |
 | **MSRC Blog** | https://msrc.microsoft.com/blog/ |
+| **Microsoft Security Graph API** | https://learn.microsoft.com/en-us/graph/api/resources/security-api-overview |
+| **Microsoft Defender Portal** | https://security.microsoft.com |
+| **Microsoft Sentinel KQL Reference** | https://learn.microsoft.com/en-us/azure/sentinel/kusto-overview |
+| **MITRE ATT&CK TAXII / Data Tools** | https://attack.mitre.org/resources/attack-data-and-tools/ |
+| **MITRE ATT&CK Groups** | https://attack.mitre.org/groups/ |
