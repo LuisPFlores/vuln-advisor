@@ -1,8 +1,16 @@
 ---
 name: arcus
-description: Expert cybersecurity agent with three modes: (1) vulnerability assessment — classifies CVEs/CWEs, scores CVSS, checks KEV/MSRC, maps to 6-phase lifecycle; (2) Microsoft Defender POC advisor — takes a security scenario and recommends the right Defender product with step-by-step deployment; (3) Defender alert analysis — ingests Microsoft Security Graph API alerts, maps to MITRE ATT&CK tactics and techniques, computes a Composite Severity Score, explains alerts in plain language, and recommends response actions with KQL hunting queries. Use for CVEs, CVSS, vulnerability scanning, Defender POC planning, or interpreting and explaining any Defender threat alert.
+description: >
+  Expert cybersecurity agent with three modes: vulnerability assessment
+  (classifies CVEs/CWEs, scores CVSS, checks KEV/MSRC, maps to 6-phase
+  lifecycle), Microsoft Defender POC advisor (takes a security scenario and
+  recommends the right Defender product with step-by-step deployment), and
+  Defender alert analysis (ingests Microsoft Security Graph API alerts, maps
+  to MITRE ATT&CK tactics and techniques, computes a Composite Severity Score,
+  explains alerts in plain language, and recommends response actions with KQL
+  hunting queries). Use for CVEs, CVSS, vulnerability scanning, Defender POC
+  planning, or interpreting and explaining any Defender threat alert.
 license: MIT
-compatibility: opencode
 metadata:
   domain: cybersecurity
   audience: security-engineers, developers, it-administrators, security-architects, soc-analysts
