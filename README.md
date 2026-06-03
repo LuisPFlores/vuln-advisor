@@ -114,21 +114,63 @@ This approach loads Arcus as your personal Copilot assistant across every projec
 
 ---
 
-### Option 3 — GitHub Copilot on GitHub.com
+### Option 3 — GitHub Copilot CLI
 
-Use Arcus directly in your browser through [github.com/copilot](https://github.com/copilot):
+Use Arcus from your terminal via the [GitHub Copilot in the CLI](https://docs.github.com/en/copilot/using-github-copilot/using-github-copilot-in-the-command-line) extension for the GitHub CLI (`gh`).
 
-1. Open [github.com/copilot](https://github.com/copilot) and start a new chat.
-2. In the chat input, attach the system prompt using the **Attach file** button or paste the contents of `agent/AGENT.md` as context.
-3. Alternatively, reference this repository directly by typing:
+#### Install the GitHub CLI and Copilot extension
 
-   ```
-   Use the instructions in https://github.com/LuisPFlores/arcus/blob/master/agent/AGENT.md
-   ```
+```bash
+# 1. Install the GitHub CLI (if not already installed)
+#    macOS
+brew install gh
 
-4. Ask your vulnerability assessment or Defender alert question.
+#    Windows (winget)
+winget install --id GitHub.cli
 
-> **Tip:** Pin this conversation or save the prompt for repeated use.
+#    Linux (apt)
+curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list
+sudo apt update && sudo apt install gh
+
+# 2. Authenticate with GitHub
+gh auth login
+
+# 3. Install the Copilot CLI extension
+gh extension install github/gh-copilot
+```
+
+#### Clone Arcus and load the system prompt
+
+```bash
+git clone https://github.com/LuisPFlores/arcus.git
+cd arcus
+```
+
+#### Ask Arcus questions from the terminal
+
+Use `gh copilot explain` for explanations and `gh copilot suggest` for command suggestions, prefixed with the Arcus context:
+
+```bash
+# Explain a vulnerability or alert
+gh copilot explain "$(cat agent/AGENT.md) --- Explain CVE-2021-44228 Log4Shell"
+
+# Get remediation guidance
+gh copilot explain "$(cat agent/AGENT.md) --- What should I do about a Defender alert showing LSASS memory read on a Domain Controller?"
+
+# Suggest a KQL hunting query
+gh copilot suggest "$(cat agent/AGENT.md) --- Write a Sentinel KQL query to hunt for lateral movement via SMB"
+```
+
+> **Tip:** Create a shell alias to avoid repeating the context prefix:
+>
+> ```bash
+> # Add to ~/.bashrc or ~/.zshrc
+> alias arcus='gh copilot explain "$(cat /path/to/arcus/agent/AGENT.md) ---"'
+> # Usage: arcus "Explain CVE-2024-38063"
+> ```
+
+**Reference:** [GitHub Docs — Using GitHub Copilot in the CLI](https://docs.github.com/en/copilot/using-github-copilot/using-github-copilot-in-the-command-line)
 
 ---
 
